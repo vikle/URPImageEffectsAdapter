@@ -3,12 +3,16 @@ using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
+    [CreateAssetMenu(menuName = "URP Image Effects Adapter/Kuwahara", fileName = "Kuwahara", order = 51)]
     public sealed class KuwaharaPass : ImageEffectPass<KuwaharaVolume>
     {
-        public KuwaharaPass(Shader shader) : base(shader) { }
-        
         static readonly int sr_kernelSize = Shader.PropertyToID("_KernelSize");
-        
+
+        protected override void OnInitializeShader()
+        {
+            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Kuwahara");
+        }
+
         protected override void OnRender()
         {
             var mat = m_material;

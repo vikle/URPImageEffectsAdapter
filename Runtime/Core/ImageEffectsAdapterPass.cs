@@ -4,66 +4,44 @@ using UnityEngine.Rendering.Universal;
 
 namespace URPImageEffectsAdapter
 {
-    using Effects;
-    
     public sealed class ImageEffectsAdapterPass : ScriptableRenderPass
     {
         readonly ImageEffectPass[] m_passes;
-        
-        RTHandle m_temporaryBuffer;
 
         public ImageEffectsAdapterPass(ImageEffectsAdapter renderer)
         {
-            renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
-
-            ImageEffectPass.CreateBlitMaterialIfNeeded(renderer.blitShader);
-            
-            ref readonly var shaders = ref renderer.shaders;
-            
-            m_passes = new ImageEffectPass[]
-            {
-                new KuwaharaPass(shaders.kuwahara),
-                new SobelFilterPass(shaders.sobelFilter),
-                new SharpnessPass(shaders.sharpness),
-                new BlurPass(shaders.blur)
-            };
+            renderPassEvent = renderer.renderPassEvent;
+            m_passes = renderer.passes;
         }
     
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            var camera_data = renderingData.cameraData;
+            ref var camera_data = ref renderingData.cameraData;
         
             if (!IsRealCamera(camera_data.cameraType))
             {
                 return;
             }
         
-            var descriptor = camera_data.cameraTargetDescriptor;
+            ImageEffectPass.SetupVolumeStack();
+            ImageEffectPass.SetupCameraBuffers(ref camera_data);
         
-            descriptor.depthBufferBits = 0;
-        
-            RenderingUtils.ReAllocateIfNeeded(ref m_temporaryBuffer, descriptor, FilterMode.Bilinear);
-        
-            var stack = VolumeManager.instance.stack;
-            
             for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
             {
-                m_passes[i].Setup(stack);
+                m_passes[i].OnSetup();
             }
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            var camera_data = renderingData.cameraData;
+            ref var camera_data = ref renderingData.cameraData;
 
             if (!IsRealCamera(camera_data.cameraType))
             {
                 return;
             }
-
-            var cam_target = camera_data.renderer.cameraColorTargetHandle;
             
-            ImageEffectPass.SetupStatic(ref context, m_temporaryBuffer, cam_target);
+            ImageEffectPass.SetupScriptableRenderContext(ref context);
 
             for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
             {
@@ -90,7 +68,7 @@ namespace URPImageEffectsAdapter
     
         public void Release()
         {
-            m_temporaryBuffer?.Release();
+            ImageEffectPass.ReleaseCameraBuffers();
             
             for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
             {

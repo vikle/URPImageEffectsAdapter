@@ -1,35 +1,50 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace URPImageEffectsAdapter
 {
-    public abstract class ImageEffectPass
+    public abstract class ImageEffectPass : ScriptableObject
     {
+        public Shader shader;
+        
         public abstract bool IsActive { get; }
         
         protected static ScriptableRenderContext s_context;
-        protected static readonly CommandBuffer sr_cmd;
+        protected static CommandBuffer sr_cmd;
         
         protected static RTHandle s_temporaryBuffer;
         protected static RTHandle s_cameraColorTarget;
+        protected static VolumeStack s_volumeStack;
 
         static Material s_blitMaterial;
         
-        readonly ProfilingSampler m_profilingSampler;
+        ProfilingSampler m_profilingSampler;
 
         protected Material m_material;
+
+        void OnEnable()
+        {
+            Initialize();
+        }
+
+        public virtual void Initialize()
+        {
+            if (shader == null)
+            {
+                OnInitializeShader();
+            }
+            
+            if (m_material == null)
+            {
+                m_material = CoreUtils.CreateEngineMaterial(shader);
+            }
+            
+            m_profilingSampler ??= new ProfilingSampler(GetType().Name);
+        }
+
+        protected abstract void OnInitializeShader();
         
-        static ImageEffectPass()
-        {
-            sr_cmd = new CommandBuffer();
-        }
-
-        protected ImageEffectPass(Shader shader)
-        {
-            m_profilingSampler = new ProfilingSampler(GetType().Name);
-            m_material = CoreUtils.CreateEngineMaterial(shader);
-        }
-
         public static void CreateBlitMaterialIfNeeded(Shader shader)
         {
             if (s_blitMaterial == null)
@@ -37,25 +52,41 @@ namespace URPImageEffectsAdapter
                 s_blitMaterial = CoreUtils.CreateEngineMaterial(shader);
             }
         }
-        
-        public static void SetupStatic(ref ScriptableRenderContext context, 
-                                       RTHandle temporaryBuffer,
-                                       RTHandle cameraColorTarget)
+
+        public static void InitCommandBuffer()
         {
-            s_context = context;
-            s_temporaryBuffer = temporaryBuffer;
-            s_cameraColorTarget = cameraColorTarget;
+            sr_cmd ??= new CommandBuffer();
+        }
+        
+        public static void SetupVolumeStack()
+        {
+            s_volumeStack = VolumeManager.instance.stack;
         }
 
-        public abstract void Setup(VolumeStack stack);
+        public static void SetupCameraBuffers(ref CameraData cameraData)
+        {
+            var descriptor = cameraData.cameraTargetDescriptor;
+            descriptor.depthBufferBits = 0;
+            RenderingUtils.ReAllocateIfNeeded(ref s_temporaryBuffer, descriptor, FilterMode.Bilinear);
+            
+            s_cameraColorTarget = cameraData.renderer.cameraColorTargetHandle;
+        }
+        
+        public static void SetupScriptableRenderContext(ref ScriptableRenderContext context)
+        {
+            s_context = context;
+        }
+        
+        public abstract void OnSetup();
 
         public void Render()
         {
-            if (IsActive == false) return;
-            
-            using (new ProfilingScope(sr_cmd, m_profilingSampler))
+            if (IsActive)
             {
-                OnRender();
+                using (new ProfilingScope(sr_cmd, m_profilingSampler))
+                {
+                    OnRender();
+                }
             }
         }
 
@@ -76,19 +107,28 @@ namespace URPImageEffectsAdapter
         {
             CoreUtils.Destroy(m_material);
         }
+
+        public static void ReleaseCameraBuffers()
+        {
+            s_temporaryBuffer?.Release();
+            s_temporaryBuffer = null;
+            s_cameraColorTarget = null;
+            s_volumeStack = null;
+        }
     };
     
     public abstract class ImageEffectPass<TVolume> : ImageEffectPass where TVolume : ImageEffectVolume
     {
-        protected ImageEffectPass(Shader shader) : base(shader) { }
-        
         protected TVolume m_volume;
         
-        public override bool IsActive => m_volume.IsActive();
+        bool m_isActive;
+        public override bool IsActive => m_isActive;
 
-        public override void Setup(VolumeStack stack)
+        public override void OnSetup()
         {
-            m_volume = stack.GetComponent<TVolume>();
+            var volume = s_volumeStack.GetComponent<TVolume>();
+            m_isActive = volume.IsActive();
+            m_volume = volume;
         }
     };
 }

@@ -3,11 +3,15 @@ using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
+    [CreateAssetMenu(menuName = "URP Image Effects Adapter/Sobel Filter", fileName = "Sobel Filter", order = 51)]
     public sealed class SobelFilterPass : ImageEffectPass<SobelFilterVolume>
     {
-        public SobelFilterPass(Shader shader) : base(shader) { }
-        
         static readonly int sr_delta = Shader.PropertyToID("_Delta");
+
+        protected override void OnInitializeShader()
+        {
+            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/SobelFilter");
+        }
 
         protected override void OnRender()
         {

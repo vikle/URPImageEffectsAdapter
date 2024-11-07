@@ -3,12 +3,16 @@ using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
+    [CreateAssetMenu(menuName = "URP Image Effects Adapter/Blur", fileName = "Blur", order = 51)]
     public sealed class BlurPass : ImageEffectPass<BlurVolume>
     {
-        public BlurPass(Shader shader) : base(shader) { }
-        
         static readonly int sr_kernelSize = Shader.PropertyToID("_KernelSize");
         static readonly int sr_sigma = Shader.PropertyToID("_Sigma");
+
+        protected override void OnInitializeShader()
+        {
+            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Blur");
+        }
 
         protected override void OnRender()
         {

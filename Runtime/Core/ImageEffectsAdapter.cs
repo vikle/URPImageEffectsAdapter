@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -5,17 +7,26 @@ namespace URPImageEffectsAdapter
 {
     public sealed class ImageEffectsAdapter : ScriptableRendererFeature
     {
+        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         public Shader blitShader;
-        public ShadersList shaders;
+
+        public ImageEffectPass[] passes = Array.Empty<ImageEffectPass>();
         
         ImageEffectsAdapterPass m_pass;
 
         public override void Create()
         {
+            if (passes.Any(p => p == null))
+            {
+                Debug.LogError("Any image effect pass is null");
+                Dispose(true);
+                return;
+            }
+            
             InitShaders();
             m_pass = new ImageEffectsAdapterPass(this);
         }
-
+        
         private void InitShaders()
         {
             if (blitShader == null)
@@ -23,35 +34,27 @@ namespace URPImageEffectsAdapter
                 blitShader = Shader.Find("Hidden/ImageEffectsAdapter/Blit");
             }
             
-            if (shaders.kuwahara == null)
-            {
-                shaders.kuwahara = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Kuwahara");
-            }
+            ImageEffectPass.InitCommandBuffer();
+            ImageEffectPass.CreateBlitMaterialIfNeeded(blitShader);
 
-            if (shaders.sobelFilter == null)
+            for (int i = 0, i_max = passes.Length; i < i_max; i++)
             {
-                shaders.sobelFilter = Shader.Find("Hidden/ImageEffectsAdapter/Effects/SobelFilter");
-            }
-            
-            if (shaders.sharpness == null)
-            {
-                shaders.sharpness = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Sharpness");
-            }
-
-            if (shaders.blur == null)
-            {
-                shaders.blur = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Blur");
+                passes[i].Initialize();
             }
         }
         
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            renderer.EnqueuePass(m_pass);
+            if (m_pass != null)
+            {
+                renderer.EnqueuePass(m_pass);
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
-            m_pass.Release();
+            m_pass?.Release();
+            m_pass = null;
         }
     };
 }
