@@ -1,6 +1,8 @@
 ## URP render feature wroks as adapter for any custom post process effect.
 
-![image](https://github.com/user-attachments/assets/3a3bac77-8453-4000-8f5d-fb83cb241bae)
+![image](https://github.com/user-attachments/assets/68827b20-39ab-4ee6-9cb2-032d2af01c59)
+![image](https://github.com/user-attachments/assets/a0a4f6c1-6aa8-42b0-85af-e90e66fe23f1)
+
 
 ### It is easily configured in the usual way
 ![image](https://github.com/user-attachments/assets/01e7f49c-32aa-4383-ba49-db794ab88772)
