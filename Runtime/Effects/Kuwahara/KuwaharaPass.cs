@@ -8,9 +8,9 @@ namespace URPImageEffectsAdapter.Effects
     {
         static readonly int sr_kernelSize = Shader.PropertyToID("_KernelSize");
 
-        protected override void OnInitializeShader()
+        protected override Shader OnInitializeShader()
         {
-            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Kuwahara");
+            return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Kuwahara");
         }
 
         protected override void OnRender()

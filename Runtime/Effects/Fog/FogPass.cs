@@ -10,9 +10,9 @@ namespace URPImageEffectsAdapter.Effects
         static readonly int sr_offset = Shader.PropertyToID("_Offset");
         static readonly int sr_color = Shader.PropertyToID("_Color");
         
-        protected override void OnInitializeShader()
+        protected override Shader OnInitializeShader()
         {
-            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Fog");
+            return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Fog");
         }
         
         protected override void OnRender()

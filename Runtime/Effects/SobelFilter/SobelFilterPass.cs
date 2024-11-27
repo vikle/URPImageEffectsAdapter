@@ -8,9 +8,9 @@ namespace URPImageEffectsAdapter.Effects
     {
         static readonly int sr_delta = Shader.PropertyToID("_Delta");
 
-        protected override void OnInitializeShader()
+        protected override Shader OnInitializeShader()
         {
-            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/SobelFilter");
+            return Shader.Find("Hidden/ImageEffectsAdapter/Effects/SobelFilter");
         }
 
         protected override void OnRender()

@@ -9,9 +9,9 @@ namespace URPImageEffectsAdapter.Effects
         static readonly int sr_kernelSize = Shader.PropertyToID("_KernelSize");
         static readonly int sr_sigma = Shader.PropertyToID("_Sigma");
 
-        protected override void OnInitializeShader()
+        protected override Shader OnInitializeShader()
         {
-            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Blur");
+            return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Blur");
         }
 
         protected override void OnRender()

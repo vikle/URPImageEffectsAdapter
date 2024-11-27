@@ -32,7 +32,7 @@ namespace URPImageEffectsAdapter
         {
             if (shader == null)
             {
-                OnInitializeShader();
+                shader = OnInitializeShader();
             }
             
             if (m_material == null)
@@ -43,7 +43,7 @@ namespace URPImageEffectsAdapter
             m_profilingSampler ??= new ProfilingSampler(GetType().Name);
         }
 
-        protected abstract void OnInitializeShader();
+        protected abstract Shader OnInitializeShader();
         
         public static void CreateBlitMaterialIfNeeded(Shader shader)
         {

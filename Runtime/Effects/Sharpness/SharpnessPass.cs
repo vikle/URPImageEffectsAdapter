@@ -8,9 +8,9 @@ namespace URPImageEffectsAdapter.Effects
     {
         static readonly int sr_amount = Shader.PropertyToID("_Amount");
 
-        protected override void OnInitializeShader()
+        protected override Shader OnInitializeShader()
         {
-            shader = Shader.Find("Hidden/ImageEffectsAdapter/Effects/Sharpness");
+            return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Sharpness");
         }
 
         protected override void OnRender()
