@@ -11,7 +11,7 @@ namespace URPImageEffectsAdapter
         public ImageEffectsAdapterPass(ImageEffectsAdapter renderer)
         {
             renderPassEvent = renderer.renderPassEvent;
-            m_passes = renderer.passes;
+            m_passes = renderer.passes.ToArray();
         }
     
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)

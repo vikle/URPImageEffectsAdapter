@@ -1,5 +1,4 @@
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -7,23 +6,20 @@ namespace URPImageEffectsAdapter
 {
     public sealed class ImageEffectsAdapter : ScriptableRendererFeature
     {
-        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
+        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         public Shader blitShader;
 
-        public ImageEffectPass[] passes = Array.Empty<ImageEffectPass>();
+        public List<ImageEffectPass> passes = new List<ImageEffectPass>(8);
         
         ImageEffectsAdapterPass m_pass;
 
         public override void Create()
         {
-            if (passes.Any(p => p == null))
-            {
-                Debug.LogError("Any image effect pass is null");
-                Dispose(true);
-                return;
-            }
+            passes.RemoveAll(pass => pass == null);
             
             InitShaders();
+            InitPasses();
+            
             m_pass = new ImageEffectsAdapterPass(this);
         }
         
@@ -33,11 +29,14 @@ namespace URPImageEffectsAdapter
             {
                 blitShader = Shader.Find("Hidden/ImageEffectsAdapter/Blit");
             }
-            
+        }
+
+        private void InitPasses()
+        {
             ImageEffectPass.InitCommandBuffer();
             ImageEffectPass.CreateBlitMaterialIfNeeded(blitShader);
 
-            for (int i = 0, i_max = passes.Length; i < i_max; i++)
+            for (int i = 0, i_max = passes.Count; i < i_max; i++)
             {
                 passes[i].Initialize();
             }
@@ -45,10 +44,7 @@ namespace URPImageEffectsAdapter
         
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            if (m_pass != null)
-            {
-                renderer.EnqueuePass(m_pass);
-            }
+            renderer.EnqueuePass(m_pass);
         }
 
         protected override void Dispose(bool disposing)

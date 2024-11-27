@@ -12,8 +12,6 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"   
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"        
 
-        SAMPLER(sampler_BlitTexture);
-
         CBUFFER_START(UnityPerMaterial)
             half4 _BlitTexture_ST;
             half4 _BlitTexture_TexelSize;
@@ -23,8 +21,8 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
 
         half gaussian(half pos)
         {
-            half sigma = _Sigma;
-            return (1.0 / sqrt(2.0 * PI * sigma * sigma)) * exp(-(pos * pos) / (2.0 * sigma * sigma));
+            half s = _Sigma;
+            return (half(1.0) / sqrt(half(2.0) * half(PI) * s * s)) * exp(-(pos * pos) / (half(2.0) * s * s));
         }
         ENDHLSL
 
@@ -43,7 +41,7 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
 
                 UNITY_LOOP for (half x = -_KernelSize; x <= _KernelSize; x++)
                 {
-                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(x * sx, 0.0));
+                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(x * sx, 0.0));
                     samples++;
                 }
 
@@ -67,7 +65,7 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
 
                 UNITY_LOOP for (half y = -_KernelSize; y <= _KernelSize; y++)
                 {
-                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(0.0, y * sy));
+                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, y * sy));
                     samples++;
                 }
 
@@ -89,10 +87,10 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
                 half4 output = 0.0;
                 half samples = 0.0;
 
-                for (half x = -_KernelSize; x <= _KernelSize; x++)
+                UNITY_LOOP for (half x = -_KernelSize; x <= _KernelSize; x++)
                 {
                     half gauss = gaussian(x);
-                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(x * sx, 0.0));
+                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(x * sx, 0.0));
                     samples += gauss;
                 }
 
@@ -117,7 +115,7 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
                 UNITY_LOOP for (half y = -_KernelSize; y <= _KernelSize; y++)
                 {
                     half gauss = gaussian(y);
-                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(0.0, y * sy));
+                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, y * sy));
                     samples += gauss;
                 }
 

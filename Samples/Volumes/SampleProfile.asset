@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7be08fd07db490f886c7145d2d67274, type: 3}
   m_Name: SobelFilterVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   delta:
     m_OverrideState: 1
-    m_Value: 0.0005
+    m_Value: 0.001
 --- !u!114 &-2498676537263436453
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -28,13 +28,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44155ecb292c32c4e9a907faeb2071c0, type: 3}
   m_Name: BlurVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 1
   kernelSize:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 10
   sigma:
     m_OverrideState: 0
     m_Value: 5
@@ -51,9 +51,10 @@ MonoBehaviour:
   m_Name: SampleProfile
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 3083011181337796087}
   - {fileID: 5264934769472729967}
   - {fileID: -7817476014804613016}
-  - {fileID: 3083011181337796087}
+  - {fileID: 4753912318426701162}
   - {fileID: -2498676537263436453}
 --- !u!114 &3083011181337796087
 MonoBehaviour:
@@ -67,10 +68,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   amount:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &4753912318426701162
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22eac7613ff44f79831f6a955dd6ca82, type: 3}
+  m_Name: FogVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  density:
+    m_OverrideState: 1
+    m_Value: 0.02
+  offset:
+    m_OverrideState: 1
+    m_Value: 20
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.41960788, g: 0.52156866, b: 0.6745098, a: 1}
 --- !u!114 &5264934769472729967
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -83,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca27375c7c47454dbfc8a7762a9946b2, type: 3}
   m_Name: KuwaharaVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   kernelSize:
     m_OverrideState: 1
     m_Value: 2

@@ -12,8 +12,6 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Sharpness"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"   
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-        SAMPLER(sampler_BlitTexture);
-
         CBUFFER_START(UnityPerMaterial)
             half4 _BlitTexture_ST;
             half4 _BlitTexture_TexelSize;
@@ -32,12 +30,12 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Sharpness"
                 half sx = _BlitTexture_TexelSize.x;
                 half sy = _BlitTexture_TexelSize.y;
                 
-                half4 n = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(0.0, sy));
-                half4 e = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv + half2(sx, 0.0));
-                half4 s = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv - half2(0.0, sy));
-                half4 w = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv - half2(sx, 0.0));
+                half4 n = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, sy));
+                half4 e = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(sx, 0.0));
+                half4 s = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - half2(0.0, sy));
+                half4 w = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - half2(sx, 0.0));
 
-                half4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv);
+                half4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
                 half amount = _Amount;
                 half neighbor = -amount;
