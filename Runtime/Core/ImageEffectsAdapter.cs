@@ -33,7 +33,6 @@ namespace URPImageEffectsAdapter
 
         private void InitPasses()
         {
-            ImageEffectPass.InitCommandBuffer();
             ImageEffectPass.CreateBlitMaterialIfNeeded(blitShader);
 
             for (int i = 0, i_max = passes.Count; i < i_max; i++)

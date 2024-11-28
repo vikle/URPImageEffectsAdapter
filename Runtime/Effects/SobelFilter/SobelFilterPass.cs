@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
@@ -13,17 +14,9 @@ namespace URPImageEffectsAdapter.Effects
             return Shader.Find("Hidden/ImageEffectsAdapter/Effects/SobelFilter");
         }
 
-        protected override void OnRender()
+        protected override void OnPrepare(Material material, SobelFilterVolume volume, Queue<int> shaderPasses)
         {
-            var mat = m_material;
-            var vol = m_volume;
-
-            mat.SetFloat(sr_delta, vol.delta.value);
-
-            Blitter.BlitCameraTexture(sr_cmd, s_cameraColorTarget, s_temporaryBuffer, mat, 0);
-            BlitCameraTexture(s_temporaryBuffer, s_cameraColorTarget);
-
-            ExecuteCommandBuffer();
+            material.SetFloat(sr_delta, volume.delta.value);
         }
     };
 }

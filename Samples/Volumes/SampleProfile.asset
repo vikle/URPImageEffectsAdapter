@@ -73,12 +73,12 @@ MonoBehaviour:
   m_Name: SampleProfile
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 4753912318426701162}
   - {fileID: 3083011181337796087}
   - {fileID: 5264934769472729967}
   - {fileID: -7817476014804613016}
-  - {fileID: 4753912318426701162}
-  - {fileID: -2498676537263436453}
   - {fileID: -1869492614399983935}
+  - {fileID: -2498676537263436453}
 --- !u!114 &3083011181337796087
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   amount:
     m_OverrideState: 1
     m_Value: 1
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22eac7613ff44f79831f6a955dd6ca82, type: 3}
   m_Name: FogVolume
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   density:
     m_OverrideState: 1
     m_Value: 0.02
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca27375c7c47454dbfc8a7762a9946b2, type: 3}
   m_Name: KuwaharaVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   kernelSize:
     m_OverrideState: 1
     m_Value: 2

@@ -8,10 +8,17 @@ namespace URPImageEffectsAdapter
     {
         readonly ImageEffectPass[] m_passes;
 
+        readonly CommandBuffer m_cmd;
+        readonly ProfilingSampler m_profilingSampler;
+        
         public ImageEffectsAdapterPass(ImageEffectsAdapter renderer)
         {
             renderPassEvent = renderer.renderPassEvent;
             m_passes = renderer.passes.ToArray();
+            m_profilingSampler = new ProfilingSampler(GetType().Name);
+            m_cmd = new CommandBuffer() { name = GetType().Name };
+            
+            ImageEffectPass.SetCommandBuffer(m_cmd);
         }
     
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -25,10 +32,10 @@ namespace URPImageEffectsAdapter
         
             ImageEffectPass.SetupVolumeStack();
             ImageEffectPass.SetupCameraBuffers(ref camera_data);
-        
+
             for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
             {
-                m_passes[i].OnSetup();
+                m_passes[i].Setup();
             }
         }
 
@@ -43,9 +50,14 @@ namespace URPImageEffectsAdapter
             
             ImageEffectPass.SetupScriptableRenderContext(ref context);
 
-            for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
+            using (new ProfilingScope(m_cmd, m_profilingSampler))
             {
-                m_passes[i].Render();
+                for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
+                {
+                    m_passes[i].Render();
+                }
+                
+                ImageEffectPass.RenderFinalBlitIfNeeded();
             }
         }
 

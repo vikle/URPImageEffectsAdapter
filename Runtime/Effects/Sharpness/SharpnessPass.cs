@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
@@ -12,18 +13,10 @@ namespace URPImageEffectsAdapter.Effects
         {
             return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Sharpness");
         }
-
-        protected override void OnRender()
+        
+        protected override void OnPrepare(Material material, SharpnessVolume volume, Queue<int> shaderPasses)
         {
-            var mat = m_material;
-            var vol = m_volume;
-            
-            mat.SetFloat(sr_amount, vol.amount.value);
-            
-            Blitter.BlitCameraTexture(sr_cmd, s_cameraColorTarget, s_temporaryBuffer, mat, 0);
-            BlitCameraTexture(s_temporaryBuffer, s_cameraColorTarget);
-            
-            ExecuteCommandBuffer();
+            material.SetFloat(sr_amount, volume.amount.value);
         }
     };
 }

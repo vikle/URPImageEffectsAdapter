@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
@@ -15,19 +16,11 @@ namespace URPImageEffectsAdapter.Effects
             return Shader.Find("Hidden/ImageEffectsAdapter/Effects/Fog");
         }
         
-        protected override void OnRender()
+        protected override void OnPrepare(Material material, FogVolume volume, Queue<int> shaderPasses)
         {
-            var mat = m_material;
-            var vol = m_volume;
-            
-            mat.SetFloat(sr_density, vol.density.value);
-            mat.SetFloat(sr_offset, vol.offset.value);
-            mat.SetColor(sr_color, vol.color.value);
-        
-            Blitter.BlitCameraTexture(sr_cmd, s_cameraColorTarget, s_temporaryBuffer, mat, 0);
-            BlitCameraTexture(s_temporaryBuffer, s_cameraColorTarget);
-            
-            ExecuteCommandBuffer();
+            material.SetFloat(sr_density, volume.density.value);
+            material.SetFloat(sr_offset, volume.offset.value);
+            material.SetColor(sr_color, volume.color.value);
         }
     };
 }

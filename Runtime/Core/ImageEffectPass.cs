@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -10,16 +11,20 @@ namespace URPImageEffectsAdapter
         
         public abstract bool IsActive { get; }
         
-        protected static ScriptableRenderContext s_context;
-        protected static CommandBuffer sr_cmd;
+        static ScriptableRenderContext s_context;
+        static CommandBuffer s_cmd;
         
-        protected static RTHandle s_temporaryBuffer;
-        protected static RTHandle s_cameraColorTarget;
+        static RTHandle s_tempBuffer;
+        static RTHandle s_cameraColorTarget;
+
+        static RTHandle s_sourceBuffer;
+        static RTHandle s_destinationBuffer;
+        
         protected static VolumeStack s_volumeStack;
 
-        static Material s_blitMaterial;
+        static readonly Queue<int> sr_shaderPasses = new Queue<int>();
         
-        ProfilingSampler m_profilingSampler;
+        static Material s_blitMaterial;
 
         protected Material m_material;
 
@@ -28,7 +33,7 @@ namespace URPImageEffectsAdapter
             Initialize();
         }
 
-        public virtual void Initialize()
+        public void Initialize()
         {
             if (shader == null)
             {
@@ -39,8 +44,6 @@ namespace URPImageEffectsAdapter
             {
                 m_material = CoreUtils.CreateEngineMaterial(shader);
             }
-            
-            m_profilingSampler ??= new ProfilingSampler(GetType().Name);
         }
 
         protected abstract Shader OnInitializeShader();
@@ -53,9 +56,9 @@ namespace URPImageEffectsAdapter
             }
         }
 
-        public static void InitCommandBuffer()
+        public static void SetCommandBuffer(CommandBuffer cmd)
         {
-            sr_cmd ??= new CommandBuffer();
+            s_cmd = cmd;
         }
         
         public static void SetupVolumeStack()
@@ -67,40 +70,79 @@ namespace URPImageEffectsAdapter
         {
             var descriptor = cameraData.cameraTargetDescriptor;
             descriptor.depthBufferBits = 0;
-            RenderingUtils.ReAllocateIfNeeded(ref s_temporaryBuffer, descriptor, FilterMode.Bilinear);
+            
+            RenderingUtils.ReAllocateIfNeeded(ref s_tempBuffer, descriptor, FilterMode.Bilinear);
             
             s_cameraColorTarget = cameraData.renderer.cameraColorTargetHandle;
+
+            s_sourceBuffer = s_destinationBuffer = null;
         }
         
         public static void SetupScriptableRenderContext(ref ScriptableRenderContext context)
         {
             s_context = context;
         }
-        
-        public abstract void OnSetup();
+
+        public abstract void Setup();
 
         public void Render()
         {
-            if (IsActive)
+            if (IsActive == false) return;
+            
+            var shader_passes = sr_shaderPasses;
+            shader_passes.Clear();
+
+            OnPrepare(m_material, shader_passes);
+            OnRender(shader_passes);
+            ExecuteCommandBuffer();
+        }
+
+        protected abstract void OnPrepare(Material material, Queue<int> shaderPasses);
+
+        private void OnRender(Queue<int> shaderPasses)
+        {
+            if (shaderPasses.Count == 0)
             {
-                using (new ProfilingScope(sr_cmd, m_profilingSampler))
-                {
-                    OnRender();
-                }
+                shaderPasses.Enqueue(0);
+            }
+            
+            while (shaderPasses.Count > 0)
+            {
+                SwitchBuffers();
+                int pass = shaderPasses.Dequeue();
+                Blitter.BlitCameraTexture(s_cmd, s_sourceBuffer, s_destinationBuffer, m_material, pass);
+            }
+        }
+        
+        private static void SwitchBuffers()
+        {
+            if (s_sourceBuffer != s_cameraColorTarget)
+            {
+                s_sourceBuffer = s_cameraColorTarget;
+                s_destinationBuffer = s_tempBuffer;
+            }
+            else
+            {
+                s_sourceBuffer = s_tempBuffer;
+                s_destinationBuffer = s_cameraColorTarget;
             }
         }
 
-        protected abstract void OnRender();
-        
-        protected static void ExecuteCommandBuffer()
+        public static void RenderFinalBlitIfNeeded()
         {
-            s_context.ExecuteCommandBuffer(sr_cmd);
-            sr_cmd.Clear();
-        }
+            var dest = s_destinationBuffer;
+            var cam = s_cameraColorTarget;
 
-        protected static void BlitCameraTexture(RTHandle source, RTHandle destination)
+            if (dest == null || dest == cam) return;
+            
+            Blitter.BlitCameraTexture(s_cmd, dest, cam, s_blitMaterial, 0);
+            ExecuteCommandBuffer();
+        }
+        
+        private static void ExecuteCommandBuffer()
         {
-            Blitter.BlitCameraTexture(sr_cmd, source, destination, s_blitMaterial, 0);
+            s_context.ExecuteCommandBuffer(s_cmd);
+            s_cmd.Clear();
         }
         
         public void Release()
@@ -110,8 +152,8 @@ namespace URPImageEffectsAdapter
 
         public static void ReleaseCameraBuffers()
         {
-            s_temporaryBuffer?.Release();
-            s_temporaryBuffer = null;
+            s_tempBuffer?.Release();
+            s_tempBuffer = null;
             s_cameraColorTarget = null;
             s_volumeStack = null;
         }
@@ -119,16 +161,23 @@ namespace URPImageEffectsAdapter
     
     public abstract class ImageEffectPass<TVolume> : ImageEffectPass where TVolume : ImageEffectVolume
     {
-        protected TVolume m_volume;
+        TVolume m_volume;
         
         bool m_isActive;
-        public override bool IsActive => m_isActive;
+        public sealed override bool IsActive => m_isActive;
 
-        public override void OnSetup()
+        public sealed override void Setup()
         {
             var volume = s_volumeStack.GetComponent<TVolume>();
             m_isActive = volume.IsActive();
             m_volume = volume;
         }
+
+        protected sealed override void OnPrepare(Material material, Queue<int> shaderPasses)
+        {
+            OnPrepare(material, m_volume, shaderPasses);
+        }
+
+        protected abstract void OnPrepare(Material material, TVolume volume, Queue<int> shaderPasses);
     };
 }
