@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -28,6 +29,11 @@ namespace URPImageEffectsAdapter
 
         protected Material m_material;
 
+        void OnValidate()
+        {
+            Initialize();
+        }
+
         void OnEnable()
         {
             Initialize();
@@ -48,7 +54,7 @@ namespace URPImageEffectsAdapter
 
         protected abstract Shader OnInitializeShader();
         
-        public static void CreateBlitMaterialIfNeeded(Shader shader)
+        public static void InitBlitMaterial(Shader shader)
         {
             if (s_blitMaterial == null)
             {

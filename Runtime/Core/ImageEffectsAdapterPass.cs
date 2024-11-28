@@ -14,7 +14,7 @@ namespace URPImageEffectsAdapter
         public ImageEffectsAdapterPass(ImageEffectsAdapter renderer)
         {
             renderPassEvent = renderer.renderPassEvent;
-            m_passes = renderer.passes.ToArray();
+            m_passes = renderer.passes;
             m_profilingSampler = new ProfilingSampler(GetType().Name);
             m_cmd = new CommandBuffer() { name = GetType().Name };
             
