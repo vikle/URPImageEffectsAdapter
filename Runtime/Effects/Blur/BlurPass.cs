@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
@@ -17,8 +16,8 @@ namespace URPImageEffectsAdapter.Effects
         
         protected override void OnPrepare(Material material, BlurVolume volume, Queue<int> shaderPasses)
         {
-            material.SetInt(sr_kernelSize, volume.kernelSize.value);
-            material.SetFloat(sr_sigma, volume.sigma.value);
+            material.SendVolumeParameter(sr_kernelSize, volume.kernelSize);
+            material.SendVolumeParameter(sr_sigma, volume.sigma);
             
             int pass = ((int)volume.mode.value * 2);
         

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
@@ -16,7 +15,7 @@ namespace URPImageEffectsAdapter.Effects
         
         protected override void OnPrepare(Material material, SharpnessVolume volume, Queue<int> shaderPasses)
         {
-            material.SetFloat(sr_amount, volume.amount.value);
+            material.SendVolumeParameter(sr_amount, volume.amount);
         }
     };
 }

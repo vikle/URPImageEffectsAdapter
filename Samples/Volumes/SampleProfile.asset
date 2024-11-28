@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Name: SampleProfile
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 7505074507380698453}
   - {fileID: 4753912318426701162}
   - {fileID: 3083011181337796087}
   - {fileID: 5264934769472729967}
@@ -91,10 +92,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   amount:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.2
 --- !u!114 &4753912318426701162
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -113,7 +114,7 @@ MonoBehaviour:
     m_Value: 0.02
   offset:
     m_OverrideState: 1
-    m_Value: 20
+    m_Value: 1.4
   color:
     m_OverrideState: 1
     m_Value: {r: 0.41960788, g: 0.52156866, b: 0.6745098, a: 1}
@@ -133,3 +134,43 @@ MonoBehaviour:
   kernelSize:
     m_OverrideState: 1
     m_Value: 2
+--- !u!114 &7505074507380698453
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b6d9d861e7e436ca4663ef4c305eb84, type: 3}
+  m_Name: ColorCorrectionVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    m_OverrideState: 1
+    m_Value: 1
+  exposure:
+    m_OverrideState: 1
+    m_Value: {x: 1.3, y: 1.3, z: 1.3}
+  temperature:
+    m_OverrideState: 1
+    m_Value: -0.1
+  tint:
+    m_OverrideState: 1
+    m_Value: -0.2
+  contrast:
+    m_OverrideState: 1
+    m_Value: {x: 1.025, y: 1.025, z: 1.025}
+  linearMidPoint:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5, z: 0.5}
+  brightness:
+    m_OverrideState: 1
+    m_Value: {x: 0.01, y: 0.01, z: 0.01}
+  colorFilter:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  saturation:
+    m_OverrideState: 1
+    m_Value: {x: 1.33, y: 1.33, z: 1.33}

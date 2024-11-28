@@ -131,10 +131,11 @@ namespace URPImageEffectsAdapter
         public static void RenderFinalBlitIfNeeded()
         {
             var dest = s_destinationBuffer;
-            var cam = s_cameraColorTarget;
+            if (dest == null) return;
 
-            if (dest == null || dest == cam) return;
-            
+            var cam = s_cameraColorTarget;
+            if (dest == cam) return;
+
             Blitter.BlitCameraTexture(s_cmd, dest, cam, s_blitMaterial, 0);
             ExecuteCommandBuffer();
         }

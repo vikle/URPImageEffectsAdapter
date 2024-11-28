@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
@@ -18,9 +17,9 @@ namespace URPImageEffectsAdapter.Effects
         
         protected override void OnPrepare(Material material, FogVolume volume, Queue<int> shaderPasses)
         {
-            material.SetFloat(sr_density, volume.density.value);
-            material.SetFloat(sr_offset, volume.offset.value);
-            material.SetColor(sr_color, volume.color.value);
+            material.SendVolumeParameter(sr_density, volume.density);
+            material.SendVolumeParameter(sr_offset, volume.offset);
+            material.SendVolumeParameter(sr_color, volume.color);
         }
     };
 }

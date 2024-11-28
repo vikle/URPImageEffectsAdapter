@@ -18,7 +18,7 @@
             half4 _SeverityParams;
         CBUFFER_END
 
-        half Luminance(half3 color)
+        static half LocalLuminance(half3 color)
         {
             return dot(color, half3(0.299, 0.587, 0.114));
         }
@@ -65,7 +65,7 @@
 
                 #ifdef _DIFFERENCE
                 half3 difference = abs(color.rgb - cb);
-                cb = lerp(Luminance(color), half3(1.0, 0.0, 0.0), saturate(dot(difference, half(1.0))));
+                cb = lerp(LocalLuminance(color), half3(1.0, 0.0, 0.0), saturate(dot(difference, half(1.0))));
                 #endif
                 
                 return half4(saturate(cb), 1.0);

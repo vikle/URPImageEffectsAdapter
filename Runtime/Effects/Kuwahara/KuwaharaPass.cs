@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
@@ -16,7 +15,7 @@ namespace URPImageEffectsAdapter.Effects
         
         protected override void OnPrepare(Material material, KuwaharaVolume volume, Queue<int> shaderPasses)
         {
-            material.SetFloat(sr_kernelSize, volume.kernelSize.value);
+            material.SendVolumeParameter(sr_kernelSize, volume.kernelSize);
         }
     };
 }

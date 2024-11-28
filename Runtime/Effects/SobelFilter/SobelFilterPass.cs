@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace URPImageEffectsAdapter.Effects
 {
@@ -16,7 +15,7 @@ namespace URPImageEffectsAdapter.Effects
 
         protected override void OnPrepare(Material material, SobelFilterVolume volume, Queue<int> shaderPasses)
         {
-            material.SetFloat(sr_delta, volume.delta.value);
+            material.SendVolumeParameter(sr_delta, volume.delta);
         }
     };
 }
