@@ -16,6 +16,25 @@ MonoBehaviour:
   delta:
     m_OverrideState: 1
     m_Value: 0.001
+--- !u!114 &-3160818575586982948
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22c7f7de05174ede845629ce6a901794, type: 3}
+  m_Name: CellShadingVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    m_OverrideState: 0
+    m_Value: 0
+  shades:
+    m_OverrideState: 0
+    m_Value: 4
 --- !u!114 &-2498676537263436453
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -80,6 +99,7 @@ MonoBehaviour:
   - {fileID: -7817476014804613016}
   - {fileID: -1869492614399983935}
   - {fileID: -2498676537263436453}
+  - {fileID: -3160818575586982948}
 --- !u!114 &3083011181337796087
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -92,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   amount:
     m_OverrideState: 1
     m_Value: 0.2
@@ -108,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22eac7613ff44f79831f6a955dd6ca82, type: 3}
   m_Name: FogVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   density:
     m_OverrideState: 1
     m_Value: 0.02
@@ -117,7 +137,7 @@ MonoBehaviour:
     m_Value: 1.4
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.41960788, g: 0.52156866, b: 0.6745098, a: 1}
+    m_Value: {r: 0.59911305, g: 0.6745098, b: 0.41960785, a: 1}
 --- !u!114 &5264934769472729967
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -146,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6d9d861e7e436ca4663ef4c305eb84, type: 3}
   m_Name: ColorCorrectionVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     m_OverrideState: 1
     m_Value: 1

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,25 +8,25 @@ namespace URPImageEffectsAdapter
     public abstract class ImageEffectPass : ScriptableObject
     {
         public Shader shader;
+
+        protected abstract bool IsActive { get; }
         
-        public abstract bool IsActive { get; }
+        Material m_material;
         
         static ScriptableRenderContext s_context;
         static CommandBuffer s_cmd;
         
-        static RTHandle s_tempBuffer;
+        static RTHandle s_tempColorTarget;
         static RTHandle s_cameraColorTarget;
 
-        static RTHandle s_sourceBuffer;
-        static RTHandle s_destinationBuffer;
+        static RTHandle s_currentSource;
+        static RTHandle s_currentDestination;
         
         protected static VolumeStack s_volumeStack;
 
         static readonly Queue<int> sr_shaderPasses = new Queue<int>();
         
         static Material s_blitMaterial;
-
-        protected Material m_material;
 
         void OnValidate()
         {
@@ -77,11 +76,12 @@ namespace URPImageEffectsAdapter
             var descriptor = cameraData.cameraTargetDescriptor;
             descriptor.depthBufferBits = 0;
             
-            RenderingUtils.ReAllocateIfNeeded(ref s_tempBuffer, descriptor, FilterMode.Bilinear);
+            RenderingUtils.ReAllocateIfNeeded(ref s_tempColorTarget, descriptor, FilterMode.Bilinear);
             
             s_cameraColorTarget = cameraData.renderer.cameraColorTargetHandle;
 
-            s_sourceBuffer = s_destinationBuffer = null;
+            s_currentSource = null;
+            s_currentDestination = null;
         }
         
         public static void SetupScriptableRenderContext(ref ScriptableRenderContext context)
@@ -116,27 +116,27 @@ namespace URPImageEffectsAdapter
             {
                 SwitchBuffers();
                 int pass = shaderPasses.Dequeue();
-                Blitter.BlitCameraTexture(s_cmd, s_sourceBuffer, s_destinationBuffer, m_material, pass);
+                Blitter.BlitCameraTexture(s_cmd, s_currentSource, s_currentDestination, m_material, pass);
             }
         }
         
         private static void SwitchBuffers()
         {
-            if (s_sourceBuffer != s_cameraColorTarget)
+            if (s_currentSource != s_cameraColorTarget)
             {
-                s_sourceBuffer = s_cameraColorTarget;
-                s_destinationBuffer = s_tempBuffer;
+                s_currentSource = s_cameraColorTarget;
+                s_currentDestination = s_tempColorTarget;
             }
             else
             {
-                s_sourceBuffer = s_tempBuffer;
-                s_destinationBuffer = s_cameraColorTarget;
+                s_currentSource = s_tempColorTarget;
+                s_currentDestination = s_cameraColorTarget;
             }
         }
 
-        public static void RenderFinalBlitIfNeeded()
+        public static void RenderFinalBlit()
         {
-            var dest = s_destinationBuffer;
+            var dest = s_currentDestination;
             if (dest == null) return;
 
             var cam = s_cameraColorTarget;
@@ -159,8 +159,8 @@ namespace URPImageEffectsAdapter
 
         public static void ReleaseCameraBuffers()
         {
-            s_tempBuffer?.Release();
-            s_tempBuffer = null;
+            s_tempColorTarget?.Release();
+            s_tempColorTarget = null;
             s_cameraColorTarget = null;
             s_volumeStack = null;
         }
@@ -171,7 +171,7 @@ namespace URPImageEffectsAdapter
         TVolume m_volume;
         
         bool m_isActive;
-        public sealed override bool IsActive => m_isActive;
+        protected sealed override bool IsActive => m_isActive;
 
         public sealed override void Setup()
         {

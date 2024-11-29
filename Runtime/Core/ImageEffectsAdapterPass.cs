@@ -57,7 +57,7 @@ namespace URPImageEffectsAdapter
                     m_passes[i].Render();
                 }
                 
-                ImageEffectPass.RenderFinalBlitIfNeeded();
+                ImageEffectPass.RenderFinalBlit();
             }
         }
 
