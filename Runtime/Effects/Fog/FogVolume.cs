@@ -9,7 +9,7 @@ namespace URPImageEffectsAdapter.Effects
     {
         public ClampedFloatParameter density = new ClampedFloatParameter(0f, 0f, 1f);
         public ClampedFloatParameter offset = new ClampedFloatParameter(0f, 0f, 100f);
-        public ColorParameter color = new ColorParameter(Color.gray, false, false, false);
+        public ColorParameter color = new ColorParameter(Color.gray, true, false, false);
         
         public override bool IsActive()
         {

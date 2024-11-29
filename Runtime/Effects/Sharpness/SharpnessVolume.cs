@@ -7,7 +7,7 @@ namespace URPImageEffectsAdapter.Effects
     [VolumeComponentMenuForRenderPipeline("Image-effects/Sharpness", typeof(UniversalRenderPipeline))]
     public sealed class SharpnessVolume : ImageEffectVolume
     {
-        public ClampedFloatParameter amount = new ClampedFloatParameter(0f, -10f, 10f);
+        public ClampedFloatParameter amount = new ClampedFloatParameter(0f, 0f, 2f);
         
         public override bool IsActive()
         {

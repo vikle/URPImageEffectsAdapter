@@ -7,6 +7,7 @@ namespace URPImageEffectsAdapter.Effects
     public sealed class CellShadingPass: ImageEffectPass<CellShadingVolume>
     {
         static readonly int sr_shades = Shader.PropertyToID("_Shades");
+        static readonly int sr_strength = Shader.PropertyToID("_Strength");
         
         protected override Shader OnInitializeShader()
         {
@@ -16,6 +17,7 @@ namespace URPImageEffectsAdapter.Effects
         protected override void OnPrepare(Material material, CellShadingVolume volume, Queue<int> shaderPasses)
         {
             material.SendVolumeParameter(sr_shades, volume.shades);
+            material.SetFloat(sr_strength, (1.0f - volume.strength.value));
         }
     };
 }

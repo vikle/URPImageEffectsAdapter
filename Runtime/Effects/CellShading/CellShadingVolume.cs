@@ -7,6 +7,7 @@ namespace URPImageEffectsAdapter.Effects
     public sealed class CellShadingVolume : ImageEffectVolume
     {
         public ClampedIntParameter shades = new ClampedIntParameter(0, 0, 32);
+        public ClampedFloatParameter strength = new ClampedFloatParameter(0.7f, 0f, 1f);
         
         public override bool IsActive()
         {

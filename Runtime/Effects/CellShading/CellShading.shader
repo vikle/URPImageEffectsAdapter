@@ -19,6 +19,7 @@
             half4 _BlitTexture_ST;
             half4 _BlitTexture_TexelSize;
             int _Shades;
+            half _Strength;
         CBUFFER_END
         ENDHLSL
 
@@ -38,8 +39,8 @@
                 half brighness_of_shade = (shade / shades);
                 half factor = (brightness / brighness_of_shade);
                 
-                color.rgb /= factor;
-
+                color.rgb = max(color.rgb * _Strength, color.rgb / factor);
+                
                 return color;
             }
             ENDHLSL
