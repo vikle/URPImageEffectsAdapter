@@ -31,10 +31,10 @@ MonoBehaviour:
   active: 0
   shades:
     m_OverrideState: 1
-    m_Value: 16
+    m_Value: 12
   strength:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 0.6
 --- !u!114 &-2498676537263436453
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -53,9 +53,9 @@ MonoBehaviour:
     m_Value: 1
   kernelSize:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 8
   sigma:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 5
 --- !u!114 &-1869492614399983935
 MonoBehaviour:
@@ -92,9 +92,9 @@ MonoBehaviour:
   m_Name: SampleProfile
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 3083011181337796087}
   - {fileID: 7505074507380698453}
   - {fileID: 4753912318426701162}
-  - {fileID: 3083011181337796087}
   - {fileID: 5264934769472729967}
   - {fileID: -3160818575586982948}
   - {fileID: -7817476014804613016}
@@ -112,10 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   amount:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.333
 --- !u!114 &4753912318426701162
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -131,13 +131,13 @@ MonoBehaviour:
   active: 1
   density:
     m_OverrideState: 1
-    m_Value: 0.0333
+    m_Value: 0.0165
   offset:
     m_OverrideState: 1
     m_Value: 0
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.09522961, g: 0.14022388, b: 0.18867922, a: 1}
+    m_Value: {r: 0.08330367, g: 0.11712354, b: 0.1509434, a: 1}
 --- !u!114 &5264934769472729967
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -173,24 +173,24 @@ MonoBehaviour:
   exposure:
     m_OverrideState: 1
     m_Value: {x: 1.3, y: 1.3, z: 1.3}
+  brightness:
+    m_OverrideState: 1
+    m_Value: {x: 0.01, y: 0.01, z: 0.01}
+  linearMidPoint:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5, z: 0.5}
+  contrast:
+    m_OverrideState: 1
+    m_Value: {x: 1.025, y: 1.025, z: 1.025}
+  saturation:
+    m_OverrideState: 1
+    m_Value: {x: 1.2, y: 1.2, z: 1.2}
   temperature:
     m_OverrideState: 1
     m_Value: -0.2
   tint:
     m_OverrideState: 1
     m_Value: -0.2
-  contrast:
-    m_OverrideState: 1
-    m_Value: {x: 1.025, y: 1.025, z: 1.025}
-  linearMidPoint:
-    m_OverrideState: 1
-    m_Value: {x: 0.5, y: 0.5, z: 0.5}
-  brightness:
-    m_OverrideState: 1
-    m_Value: {x: 0.01, y: 0.01, z: 0.01}
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 0.13999645, g: 0.17152013, b: 0.20754719, a: 1}
-  saturation:
-    m_OverrideState: 1
-    m_Value: {x: 1.2, y: 1.2, z: 1.2}
+    m_Value: {r: 0.124288, g: 0.15902928, b: 0.1981132, a: 1}
