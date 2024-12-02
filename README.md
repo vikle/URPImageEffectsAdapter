@@ -1,6 +1,8 @@
 ## URP render feature wroks as adapter for any custom post process effect.
 
-![image](https://github.com/user-attachments/assets/304a4045-aa7a-486a-b8a2-a64b2acca617)
+Orginal             |  Color Correction & Fog
+:-------------------------:|:-------------------------:
+![image](https://github.com/user-attachments/assets/304a4045-aa7a-486a-b8a2-a64b2acca617)  | ![image](https://github.com/user-attachments/assets/36eb2c31-b658-4d79-a1fd-ab97673247dd)
 
 <details>
   <summary>Sharpness</summary>
