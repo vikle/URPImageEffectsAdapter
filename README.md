@@ -90,8 +90,10 @@
 
 </details>
 
+### Optimization based on the principle: one shader - one pass, with an even number of active shader passes
+![image](https://github.com/user-attachments/assets/25053a53-b3c2-4359-a8d7-57a6a9137439)
+
 ### It is easily configured in the usual way
-![image](https://github.com/user-attachments/assets/901a421f-0c3b-4f55-ba12-461986172402)
 ![image](https://github.com/user-attachments/assets/68dd0a05-15b8-46d1-b9b2-c458c8db8eb5)
 
 - You can write your own **Effect** if you inherit from generic class `ImageEffectPass<TVolume>`.
