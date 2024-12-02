@@ -90,7 +90,8 @@
 
 </details>
 
-### Optimization based on the principle: one shader - one pass, with an even number of active shader passes
+### Optimization principle: one shader - one pass.
+*with an even number of active shader passes
 ![image](https://github.com/user-attachments/assets/25053a53-b3c2-4359-a8d7-57a6a9137439)
 
 ### It is easily configured in the usual way
