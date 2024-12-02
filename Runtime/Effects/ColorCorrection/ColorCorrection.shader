@@ -26,6 +26,7 @@
             half3 _Brightness;
             half4 _ColorFilter;
             half3 _Saturation;
+            half _Dark;
         CBUFFER_END
 
         static half3 WhiteBalance(half3 color, half3 balance)
@@ -65,7 +66,8 @@
                 color = max(k_zero, _Contrast * (color - _MidPoint) + _MidPoint + _Brightness);
                 color = max(k_zero, color * _ColorFilter);
                 color = max(k_zero, lerp(Luminance(color), color, _Saturation));
-
+                color = lerp(color, color * (color.r + color.g + color.b), _Dark);
+                
                 return half4(color, 1.0);
             }
             ENDHLSL

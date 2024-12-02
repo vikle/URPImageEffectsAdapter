@@ -13,6 +13,7 @@ namespace URPImageEffectsAdapter.Effects
         static readonly int sr_saturation = Shader.PropertyToID("_Saturation");
         static readonly int sr_lmsBalance = Shader.PropertyToID("_LMSBalance");
         static readonly int sr_colorFilter = Shader.PropertyToID("_ColorFilter");
+        static readonly int sr_dark = Shader.PropertyToID("_Dark");
 
         protected override Shader OnInitializeShader()
         {
@@ -41,6 +42,7 @@ namespace URPImageEffectsAdapter.Effects
             material.SendVolumeParameter(sr_contrast, volume.contrast);
             material.SendVolumeParameter(sr_saturation, volume.saturation);
             material.SendVolumeParameter(sr_colorFilter, volume.colorFilter);
+            material.SendVolumeParameter(sr_dark, volume.dark);
         }
     };
 }

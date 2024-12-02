@@ -17,7 +17,8 @@ namespace URPImageEffectsAdapter.Effects
         public ClampedFloatParameter temperature = new ClampedFloatParameter(0f, -1f, 1f);
         public ClampedFloatParameter tint = new ClampedFloatParameter(0f, -1f, 1f);
         public ColorParameter colorFilter = new ColorParameter(Color.white, true, false, false);
-
+        public ClampedFloatParameter dark = new ClampedFloatParameter(0f, -2f, 2f);
+        
         public override bool IsActive()
         {
             return enabled.value;

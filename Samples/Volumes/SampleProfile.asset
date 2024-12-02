@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5904fbe4fa554eb8a56b4d5adbfc5e9a, type: 3}
   m_Name: SharpnessVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   amount:
     m_OverrideState: 1
     m_Value: 0.333
@@ -128,16 +128,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22eac7613ff44f79831f6a955dd6ca82, type: 3}
   m_Name: FogVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   density:
     m_OverrideState: 1
-    m_Value: 0.0165
+    m_Value: 0.05
   offset:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 7
+  fade:
+    m_OverrideState: 1
+    m_Value: 0.9
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.08330367, g: 0.11712354, b: 0.1509434, a: 1}
+    m_Value: {r: 0.08235294, g: 0.11764706, b: 0.14901961, a: 1}
 --- !u!114 &5264934769472729967
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -166,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6d9d861e7e436ca4663ef4c305eb84, type: 3}
   m_Name: ColorCorrectionVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     m_OverrideState: 1
     m_Value: 1

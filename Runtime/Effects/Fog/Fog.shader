@@ -15,9 +15,8 @@
         CBUFFER_START(UnityPerMaterial)
             half4 _BlitTexture_ST;
             half4 _BlitTexture_TexelSize;
-            half _Density;
-            half _Offset;
-            half4 _Color;
+            half4 _FogParams;
+            half4 _FogColor;
         CBUFFER_END
 
         TEXTURE2D_X(_CameraDepthTexture);  
@@ -30,19 +29,20 @@
 
             half4 frag(Varyings input) : SV_TARGET
             {
+                half4 params = _FogParams;
+                
                 half2 uv = input.texcoord;
-
                 half4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
                 
                 half depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_LinearClamp, uv);
                 depth = Linear01Depth(depth, _ZBufferParams);
 
                 half view_distance = (depth * _ProjectionParams.z);
-
-                half factor = (_Density / sqrt(log(half(2.0)))) * max(half(0.0), view_distance - _Offset);
+                half factor = (params.x * max(half(0.0), view_distance - params.y));
                 factor = exp2(-factor * factor);
-
-                color = lerp(_Color, color, saturate(factor));
+                factor = saturate(factor);
+                
+                color = lerp(lerp(color, _FogColor, params.z), color, factor);
 
                 return color;                
             }

@@ -2,7 +2,7 @@
   "name": "com.vikle.urp-image-effects-adapter",
   "displayName": "URP Image Effects Adapter",
    "description": "URP render feature fo any custom post process.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "unity": "2022.3", 
   "license": "MIT",
   "repository": {
