@@ -93,11 +93,14 @@ Orginal             |  Color Correction & Fog
 </details>
 
 ### Optimization principle: one shader - one pass.
-*with an even number of active shader passes
-![image](https://github.com/user-attachments/assets/25053a53-b3c2-4359-a8d7-57a6a9137439)
+*with an even sum of shader passes
 
-### It is easily configured in the usual way
+![image](https://github.com/user-attachments/assets/1ab1978d-ff2f-4333-9258-a41ec4bbd075)
+
+### Easily configured in the usual way
+
 ![image](https://github.com/user-attachments/assets/68dd0a05-15b8-46d1-b9b2-c458c8db8eb5)
+![image](https://github.com/user-attachments/assets/f4a7b514-0fb9-40f7-b088-ac6db9ef08a7)
 
 - You can write your own **Effect** if you inherit from generic class `ImageEffectPass<TVolume>`.
   - https://github.com/vikle/URPImageEffectsAdapter/blob/main/Runtime/Effects/Blur/BlurPass.cs#L6-L27
