@@ -1,4 +1,4 @@
-## URP render feature wroks as adapter for any custom post process effect.
+## URP render feature like as adapter for any custom post process effect.
 
 Orginal             |  Color Correction & Fog
 :-------------------------:|:-------------------------:
