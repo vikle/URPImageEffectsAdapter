@@ -13,14 +13,14 @@
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
         CBUFFER_START(UnityPerMaterial)
-            half4 _BlitTexture_ST;
-            half4 _BlitTexture_TexelSize;
-            half4 _SeverityParams;
+            float4 _BlitTexture_ST;
+            float4 _BlitTexture_TexelSize;
+            float4 _SeverityParams;
         CBUFFER_END
 
-        static half LocalLuminance(half3 color)
+        static float LocalLuminance(float3 color)
         {
-            return dot(color, half3(0.299, 0.587, 0.114));
+            return dot(color, float3(0.299, 0.587, 0.114));
         }
         ENDHLSL
         
@@ -39,17 +39,17 @@
             #include "Tritanomaly.hlsl"
             #endif                        
             
-            half4 frag(Varyings input) : SV_TARGET
+            float4 frag(Varyings input) : SV_TARGET
             {
-                half2 uv = input.texcoord;
-                half4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
+                float2 uv = input.texcoord;
+                float4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
-                half4 severity = _SeverityParams;
+                float4 severity = _SeverityParams;
                 int p1 = (int)severity.x;
                 int p2 = (int)severity.y;
-                half weight = severity.z;
+                float weight = severity.z;
 
-                half3x3 blindness;
+                float3x3 blindness;
 
                 #ifdef _PROTANOMALY
                 blindness = lerp(protanomalySeverities[p1], protanomalySeverities[p2], weight);
@@ -61,14 +61,14 @@
                 blindness = 1.0;
                 #endif            
                 
-                half3 cb = mul(blindness, color.rgb);               
+                float3 cb = mul(blindness, color.rgb);               
 
                 #ifdef _DIFFERENCE
-                half3 difference = abs(color.rgb - cb);
-                cb = lerp(LocalLuminance(color), half3(1.0, 0.0, 0.0), saturate(dot(difference, half(1.0))));
+                float3 difference = abs(color.rgb - cb);
+                cb = lerp(LocalLuminance(color), float3(1.0, 0.0, 0.0), saturate(dot(difference, float(1.0))));
                 #endif
                 
-                return half4(saturate(cb), 1.0);
+                return float4(saturate(cb), 1.0);
             }
 
             ENDHLSL

@@ -13,16 +13,16 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"        
 
         CBUFFER_START(UnityPerMaterial)
-            half4 _BlitTexture_ST;
-            half4 _BlitTexture_TexelSize;
+            float4 _BlitTexture_ST;
+            float4 _BlitTexture_TexelSize;
             int _KernelSize;
-            half _Sigma;
+            float _Sigma;
         CBUFFER_END
 
-        half gaussian(half pos)
+        float gaussian(float pos)
         {
-            half s = _Sigma;
-            return (half(1.0) / sqrt(half(2.0) * half(PI) * s * s)) * exp(-(pos * pos) / (half(2.0) * s * s));
+            float s = _Sigma;
+            return (1.0 / sqrt(2.0 * PI * s * s)) * exp(-(pos * pos) / (2.0 * s * s));
         }
         ENDHLSL
 
@@ -32,16 +32,16 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
             HLSLPROGRAM
             #pragma fragment frag
 
-            half4 frag(Varyings input) : SV_TARGET
+            float4 frag(Varyings input) : SV_TARGET
             {
-                half2 uv = input.texcoord;
-                half sx = _BlitTexture_TexelSize.x;              
-                half4 output = 0.0;
-                half samples = 0.0;
+                float2 uv = input.texcoord;
+                float sx = _BlitTexture_TexelSize.x;              
+                float4 output = 0.0;
+                float samples = 0.0;
 
-                UNITY_LOOP for (half x = -_KernelSize; x <= _KernelSize; x++)
+                UNITY_LOOP for (float x = -_KernelSize; x <= _KernelSize; x++)
                 {
-                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(x * sx, 0.0));
+                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(x * sx, 0.0));
                     samples++;
                 }
 
@@ -56,16 +56,16 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
             HLSLPROGRAM
             #pragma fragment frag
 
-            half4 frag(Varyings input) : SV_TARGET
+            float4 frag(Varyings input) : SV_TARGET
             {                
-                half2 uv = input.texcoord;
-                half sy = _BlitTexture_TexelSize.y;                
-                half4 output = 0.0;
-                half samples = 0.0;
+                float2 uv = input.texcoord;
+                float sy = _BlitTexture_TexelSize.y;                
+                float4 output = 0.0;
+                float samples = 0.0;
 
-                UNITY_LOOP for (half y = -_KernelSize; y <= _KernelSize; y++)
+                UNITY_LOOP for (float y = -_KernelSize; y <= _KernelSize; y++)
                 {
-                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, y * sy));
+                    output += SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(0.0, y * sy));
                     samples++;
                 }
 
@@ -80,17 +80,17 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
             HLSLPROGRAM
             #pragma fragment frag
 
-            half4 frag(Varyings input) : SV_Target
+            float4 frag(Varyings input) : SV_Target
             {
-                half2 uv = input.texcoord;
-                half sx = _BlitTexture_TexelSize.x;              
-                half4 output = 0.0;
-                half samples = 0.0;
+                float2 uv = input.texcoord;
+                float sx = _BlitTexture_TexelSize.x;              
+                float4 output = 0.0;
+                float samples = 0.0;
 
-                UNITY_LOOP for (half x = -_KernelSize; x <= _KernelSize; x++)
+                UNITY_LOOP for (float x = -_KernelSize; x <= _KernelSize; x++)
                 {
-                    half gauss = gaussian(x);
-                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(x * sx, 0.0));
+                    float gauss = gaussian(x);
+                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(x * sx, 0.0));
                     samples += gauss;
                 }
 
@@ -105,17 +105,17 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Blur"
             HLSLPROGRAM
             #pragma fragment frag
 
-            half4 frag(Varyings input) : SV_Target
+            float4 frag(Varyings input) : SV_Target
             {
-                half2 uv = input.texcoord;
-                half sy = _BlitTexture_TexelSize.y;                
-                half4 output = 0.0;
-                half samples = 0.0;
+                float2 uv = input.texcoord;
+                float sy = _BlitTexture_TexelSize.y;                
+                float4 output = 0.0;
+                float samples = 0.0;
 
-                UNITY_LOOP for (half y = -_KernelSize; y <= _KernelSize; y++)
+                UNITY_LOOP for (float y = -_KernelSize; y <= _KernelSize; y++)
                 {
-                    half gauss = gaussian(y);
-                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, y * sy));
+                    float gauss = gaussian(y);
+                    output += gauss * SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(0.0, y * sy));
                     samples += gauss;
                 }
 

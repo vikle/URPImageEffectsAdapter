@@ -13,9 +13,9 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Sharpness"
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
         CBUFFER_START(UnityPerMaterial)
-            half4 _BlitTexture_ST;
-            half4 _BlitTexture_TexelSize;
-            half _Amount;
+            float4 _BlitTexture_ST;
+            float4 _BlitTexture_TexelSize;
+            float _Amount;
         CBUFFER_END
         ENDHLSL
         
@@ -24,22 +24,22 @@ Shader "Hidden/ImageEffectsAdapter/Effects/Sharpness"
             HLSLPROGRAM
             #pragma fragment frag
 
-            half4 frag(Varyings input) : SV_TARGET
+            float4 frag(Varyings input) : SV_TARGET
             {
-                half2 uv = input.texcoord;
-                half sx = _BlitTexture_TexelSize.x;
-                half sy = _BlitTexture_TexelSize.y;
+                float2 uv = input.texcoord;
+                float sx = _BlitTexture_TexelSize.x;
+                float sy = _BlitTexture_TexelSize.y;
                 
-                half4 n = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(0.0, sy));
-                half4 e = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + half2(sx, 0.0));
-                half4 s = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - half2(0.0, sy));
-                half4 w = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - half2(sx, 0.0));
+                float4 n = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(0.0, sy));
+                float4 e = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv + float2(sx, 0.0));
+                float4 s = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - float2(0.0, sy));
+                float4 w = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv - float2(sx, 0.0));
 
-                half4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
+                float4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
-                half amount = _Amount;
-                half neighbor = -amount;
-                half center = (amount * half(4.0) + half(1.0));
+                float amount = _Amount;
+                float neighbor = -amount;
+                float center = (amount * 4.0 + 1.0);
 
                 color = saturate(n * neighbor + e * neighbor + color * center + s * neighbor + w * neighbor);
                 
