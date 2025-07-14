@@ -125,13 +125,13 @@ public sealed class CustomPass : ImageEffectPass<CustomEffectVolume>
 public sealed class CustomEffectVolume : ImageEffectVolume
 {
     public ClampedIntParameter intParam = new ClampedIntParameter(0, 0, 10);
-    public ClampedFloatParameter floatParam = new ClampedFloatParameter(0.5f, 0f, 1f);
+    public ClampedFloatParameter floatParam = new ClampedFloatParameter(0f, 0f, 1f);
         
     public override bool IsActive()
     {
         return true;
     }
- };
+};
 ```
 
 * To write your own **Volume Editor**, you need inherit it from generic class `ImageEffectVolumeEditor<TVolume>`.
