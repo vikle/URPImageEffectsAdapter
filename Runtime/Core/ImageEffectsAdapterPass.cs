@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -8,34 +7,38 @@ namespace URPImageEffectsAdapter
     {
         readonly ImageEffectPass[] m_passes;
 
-        readonly CommandBuffer m_cmd;
+        readonly CommandBuffer m_profilingScopeBuffer;
         readonly ProfilingSampler m_profilingSampler;
         
         public ImageEffectsAdapterPass(ImageEffectsAdapter renderer)
         {
+            string type_name = GetType().Name;
+            
             renderPassEvent = renderer.renderPassEvent;
             m_passes = renderer.passes;
-            m_profilingSampler = new ProfilingSampler(GetType().Name);
-            m_cmd = new CommandBuffer() { name = GetType().Name };
+            m_profilingSampler = new ProfilingSampler(type_name);
+            m_profilingScopeBuffer = new CommandBuffer() { name = type_name };
             
-            ImageEffectPass.SetCommandBuffer(m_cmd);
+            ImageEffectPass.CreateCommandBuffer(type_name);
         }
     
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             ref var camera_data = ref renderingData.cameraData;
         
-            if (!IsRealCamera(camera_data.cameraType))
+            if (!CameraTool.IsRealCamera(camera_data.cameraType))
             {
                 return;
             }
         
-            ImageEffectPass.SetupVolumeStack();
+            ImageEffectPass.AssignVolumeStack();
             ImageEffectPass.SetupCameraBuffers(ref camera_data);
 
-            for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
+            var passes = m_passes;
+            
+            for (int i = 0, i_max = passes.Length; i < i_max; i++)
             {
-                m_passes[i].Setup();
+                passes[i].Setup();
             }
         }
 
@@ -43,36 +46,23 @@ namespace URPImageEffectsAdapter
         {
             ref var camera_data = ref renderingData.cameraData;
 
-            if (!IsRealCamera(camera_data.cameraType))
+            if (!CameraTool.IsRealCamera(camera_data.cameraType))
             {
                 return;
             }
             
-            ImageEffectPass.SetupScriptableRenderContext(ref context);
+            ImageEffectPass.AssignContext(ref context);
 
-            using (new ProfilingScope(m_cmd, m_profilingSampler))
+            var passes = m_passes;
+            
+            using (new ProfilingScope(m_profilingScopeBuffer, m_profilingSampler))
             {
-                for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
+                for (int i = 0, i_max = passes.Length; i < i_max; i++)
                 {
-                    m_passes[i].Render();
+                    passes[i].Render();
                 }
                 
                 ImageEffectPass.RenderFinalBlit();
-            }
-        }
-
-        private static bool IsRealCamera(CameraType cameraType)
-        {
-            switch (cameraType)
-            {
-                case CameraType.SceneView: 
-                case CameraType.Game:
-                case CameraType.VR: 
-                    return true;
-
-                case CameraType.Reflection:
-                case CameraType.Preview:
-                default: return false;
             }
         }
     
@@ -82,9 +72,11 @@ namespace URPImageEffectsAdapter
         {
             ImageEffectPass.ReleaseCameraBuffers();
             
-            for (int i = 0, i_max = m_passes.Length; i < i_max; i++)
+            var passes = m_passes;
+            
+            for (int i = 0, i_max = passes.Length; i < i_max; i++)
             {
-                m_passes[i].Release();
+                passes[i].Release();
             }
         }
     };

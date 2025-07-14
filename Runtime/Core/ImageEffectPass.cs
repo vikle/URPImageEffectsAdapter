@@ -38,7 +38,7 @@ namespace URPImageEffectsAdapter
             Initialize();
         }
 
-        public void Initialize()
+        internal void Initialize()
         {
             if (shader == null)
             {
@@ -53,7 +53,7 @@ namespace URPImageEffectsAdapter
 
         protected abstract Shader OnInitializeShader();
         
-        public static void InitBlitMaterial(Shader shader)
+        internal static void InitBlitMaterial(Shader shader)
         {
             if (s_blitMaterial == null)
             {
@@ -61,17 +61,22 @@ namespace URPImageEffectsAdapter
             }
         }
 
-        public static void SetCommandBuffer(CommandBuffer cmd)
+        internal static void CreateCommandBuffer(string commandBufferName)
         {
-            s_cmd = cmd;
+            s_cmd?.Dispose();
+            
+            s_cmd = new CommandBuffer()
+            {
+                name = commandBufferName 
+            };
         }
         
-        public static void SetupVolumeStack()
+        internal static void AssignVolumeStack()
         {
             s_volumeStack = VolumeManager.instance.stack;
         }
 
-        public static void SetupCameraBuffers(ref CameraData cameraData)
+        internal static void SetupCameraBuffers(ref CameraData cameraData)
         {
             var descriptor = cameraData.cameraTargetDescriptor;
             descriptor.depthBufferBits = 0;
@@ -84,14 +89,14 @@ namespace URPImageEffectsAdapter
             s_currentDestination = null;
         }
         
-        public static void SetupScriptableRenderContext(ref ScriptableRenderContext context)
+        internal static void AssignContext(ref ScriptableRenderContext context)
         {
             s_context = context;
         }
 
-        public abstract void Setup();
+        internal abstract void Setup();
 
-        public void Render()
+        internal void Render()
         {
             if (IsActive == false) return;
             
@@ -134,7 +139,7 @@ namespace URPImageEffectsAdapter
             }
         }
 
-        public static void RenderFinalBlit()
+        internal static void RenderFinalBlit()
         {
             var dest = s_currentDestination;
             if (dest == null) return;
@@ -152,12 +157,12 @@ namespace URPImageEffectsAdapter
             s_cmd.Clear();
         }
         
-        public void Release()
+        internal void Release()
         {
             CoreUtils.Destroy(m_material);
         }
 
-        public static void ReleaseCameraBuffers()
+        internal static void ReleaseCameraBuffers()
         {
             s_tempColorTarget?.Release();
             s_tempColorTarget = null;
@@ -169,11 +174,11 @@ namespace URPImageEffectsAdapter
     public abstract class ImageEffectPass<TVolume> : ImageEffectPass where TVolume : ImageEffectVolume
     {
         TVolume m_volume;
-        
         bool m_isActive;
+        
         protected sealed override bool IsActive => m_isActive;
 
-        public sealed override void Setup()
+        internal sealed override void Setup()
         {
             var volume = s_volumeStack.GetComponent<TVolume>();
             m_isActive = volume.IsActive();

@@ -8,7 +8,6 @@ namespace URPImageEffectsAdapter
     {
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
         public Shader blitShader;
-
         public ImageEffectPass[] passes = Array.Empty<ImageEffectPass>();
         
         ImageEffectsAdapterPass m_mainPass;

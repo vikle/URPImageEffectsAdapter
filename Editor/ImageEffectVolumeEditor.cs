@@ -12,11 +12,11 @@ namespace URPImageEffectsAdapterEditor
 
         protected SerializedDataParameter UnpackParameter<TValue>(Expression<Func<TVolume, TValue>> expr)
         {
-            if(m_fetcher == null)
+            if (m_fetcher == null)
             {
                 m_fetcher = new PropertyFetcher<TVolume>(serializedObject);
             }
-            
+
             return Unpack(m_fetcher.Find(expr));
         }
     };
