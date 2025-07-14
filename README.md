@@ -1,4 +1,4 @@
-## URP render feature like as adapter for any custom post process effect.
+# URP render feature for custom post process effects.
 
 Orginal             |  Color Correction & Fog
 :-------------------------:|:-------------------------:
@@ -92,21 +92,66 @@ Orginal             |  Color Correction & Fog
 
 </details>
 
-### Optimization principle: one shader - one pass.
+## Optimization principle: one shader - one pass.
 *with an even sum of shader passes
 
 ![image](https://github.com/user-attachments/assets/1ab1978d-ff2f-4333-9258-a41ec4bbd075)
 
-### Easily configured in the usual way
+## Easily configured of usual way
 
 ![image](https://github.com/user-attachments/assets/68dd0a05-15b8-46d1-b9b2-c458c8db8eb5)
 ![image](https://github.com/user-attachments/assets/f4a7b514-0fb9-40f7-b088-ac6db9ef08a7)
 
-- You can write your own **Effect** if you inherit from generic class `ImageEffectPass<TVolume>`.
-  - https://github.com/vikle/URPImageEffectsAdapter/blob/main/Runtime/Effects/Blur/BlurPass.cs#L6-L27
+* You can write your own **Effect** if you inherit from generic class `ImageEffectPass<TVolume>`.
+```c#
+[CreateAssetMenu(menuName = "Custome Effect", fileName = "CustomEffectFile", order = 51)]
+public sealed class CustomPass : ImageEffectPass<CustomEffectVolume>
+{
+    protected override Shader OnInitializeShader()
+    {
+        return Shader.Find("CustomShaderPath");
+    }
+        
+    protected override void OnPrepare(Material material, CustomEffectVolume volume, Queue<int> shaderPasses)
+    {
+                    
+    }
+};
+```
 
-- To write your own **Volume**, you need inherit it from class `ImageEffectVolume`.
-  - https://github.com/vikle/URPImageEffectsAdapter/blob/main/Runtime/Effects/Blur/BlurVolume.cs#L6-L29
+* To write your own **Volume**, you need inherit it from class `ImageEffectVolume`.
+```c#
+[VolumeComponentMenuForRenderPipeline("Custom Effect", typeof(UniversalRenderPipeline))]
+public sealed class CustomEffectVolume : ImageEffectVolume
+{
+    public ClampedIntParameter intParam = new ClampedIntParameter(0, 0, 10);
+    public ClampedFloatParameter floatParam = new ClampedFloatParameter(0.5f, 0f, 1f);
+        
+    public override bool IsActive()
+    {
+        return true;
+    }
+ };
+```
 
-- To write your own **Volume Editor**, you need inherit it from generic class `ImageEffectVolumeEditor<TVolume>`.
-  - https://github.com/vikle/URPImageEffectsAdapter/blob/main/Editor/BlurVolumeEditor.cs#L9-L36
+* To write your own **Volume Editor**, you need inherit it from generic class `ImageEffectVolumeEditor<TVolume>`.
+```c#
+[CustomEditor(typeof(CustomEffectVolume))]
+public sealed class CustomEffectVolumeEditor : ImageEffectVolumeEditor<CustomEffectVolume>
+{
+    SerializedDataParameter m_intParam;
+    SerializedDataParameter m_floatParam;
+
+    public override void OnEnable()
+    {
+        m_intParam = UnpackParameter(p => p.intParam);
+        m_floatParam = UnpackParameter(p => p.floatParam);
+    }
+
+    public override void OnInspectorGUI()
+    {
+        PropertyField(m_intParam);
+        PropertyField(m_floatParam);
+    }
+};
+```
